@@ -3,16 +3,16 @@ import csv
 from datetime import datetime
 
 class Student:
-    def __init__(self, imie, nazwisko, obecnosc=False):
-        self.imie = imie
-        self.nazwisko = nazwisko
-        self.obecnosc = obecnosc
+    def __init__(self, name, surname, attendance=False):
+        self.name = name
+        self.surname = surname
+        self.attendance = attendance
 
     def __str__(self):
-        return f"{self.imie} {self.nazwisko} - {'Obecny' if self.obecnosc else 'Nieobecny'}"
+        return f"{self.name} {self.surname} - {'Obecny' if self.attendance else 'Nieobecny'}"
 
     def to_csv(self):
-        return f"{self.imie},{self.nazwisko},{'Obecny' if self.obecnosc else 'Nieobecny'}"
+        return f"{self.name},{self.surname},{'Obecny' if self.attendance else 'Nieobecny'}"
 
 
 def import_studentow(file_path):
@@ -33,9 +33,9 @@ def eksport_do_csv(studenci, file_path):
     try:
         with open(file_path, 'w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(["Imie", "Nazwisko", "Obecny"])
+            writer.writerow(["name", "surname", "Obecny"])
             for student in studenci:
-                writer.writerow([student.imie, student.nazwisko, "Obecny" if student.obecnosc else "Nieobecny"])
+                writer.writerow([student.name, student.surname, "Obecny" if student.attendance else "Nieobecny"])
         print(f"Zapisano plik CSV: {file_path}")
     except Exception as ex:
         print(f"Błąd przy zapisie pliku CSV: {ex}")
@@ -52,10 +52,10 @@ def eksport_do_txt(studenci, file_path):
 
 
 def dodaj_nowego_studenta(studenci):
-    imie = input("Podaj imię studenta: ")
-    nazwisko = input("Podaj nazwisko studenta: ")
-    obecnosc = input("Czy student jest obecny? (tak/nie): ").strip().lower() == 'tak'
-    nowy_student = Student(imie, nazwisko, obecnosc)
+    name = input("Podaj imię studenta: ")
+    surname = input("Podaj surname studenta: ")
+    attendance = input("Czy student jest obecny? (tak/nie): ").strip().lower() == 'tak'
+    nowy_student = Student(name, surname, attendance)
     studenci.append(nowy_student)
     print(f"Dodano nowego studenta: {nowy_student}")
 
@@ -63,20 +63,20 @@ def dodaj_nowego_studenta(studenci):
 def edytuj_obecnosc(obecnosci):
     print("Edycja obecności studentów:")
     for student in obecnosci:
-        obecny = input(f"Czy {student.imie} {student.nazwisko} jest obecny? (tak/nie): ").strip().lower() == 'tak'
+        obecny = input(f"Czy {student.name} {student.surname} jest obecny? (tak/nie): ").strip().lower() == 'tak'
         obecnosci[student] = obecny
 
 
 def synchronizuj_obecnosc(studenci, obecnosci):
     for student in studenci:
         if student in obecnosci:
-            student.obecnosc = obecnosci[student]
+            student.attendance = obecnosci[student]
 
 
 def sprawdz_obecnosc(studenci):
     for student in studenci:
-        obecny = input(f"Czy {student.imie} {student.nazwisko} jest obecny? (tak/nie): ").strip().lower() == 'tak'
-        student.obecnosc = obecny
+        obecny = input(f"Czy {student.name} {student.surname} jest obecny? (tak/nie): ").strip().lower() == 'tak'
+        student.attendance = obecny
 
 
 def main():
@@ -102,7 +102,7 @@ def main():
     if input("Czy chcesz dodać nowego studenta? (tak/nie): ").strip().lower() == 'tak':
         dodaj_nowego_studenta(studenci)
 
-    obecnosci = {student: student.obecnosc for student in studenci}
+    obecnosci = {student: student.attendance for student in studenci}
 
     if input("Czy chcesz edytować listę obecności? (tak/nie): ").strip().lower() == 'tak':
         edytuj_obecnosc(obecnosci)

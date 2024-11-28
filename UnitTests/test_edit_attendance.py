@@ -4,7 +4,7 @@ from tempfile import NamedTemporaryFile
 from io import StringIO
 from unittest.mock import patch
 from datetime import datetime
-from testyJednostkoweProgram import (
+from MainProgram import (
     Student,
     import_studentow,
     eksport_do_csv,
@@ -22,10 +22,11 @@ def sample_students():
         Student("Marek", "Zieliński", False),
     ]
 
-def test_sprawdz_obecnosc_correct_input(sample_students):
+def test_edytuj_obecnosc_correct_input(sample_students):
+    obecnosci = {student: student.attendance for student in sample_students}
     with patch("builtins.input", side_effect=["tak", "nie", "tak"]):
-        sprawdz_obecnosc(sample_students)
+        edytuj_obecnosc(obecnosci)
     
-    assert sample_students[0].obecnosc is True
-    assert sample_students[1].obecnosc is False
-    assert sample_students[2].obecnosc is True
+    assert obecnosci[sample_students[0]] is True
+    assert obecnosci[sample_students[1]] is False
+    assert obecnosci[sample_students[2]] is True

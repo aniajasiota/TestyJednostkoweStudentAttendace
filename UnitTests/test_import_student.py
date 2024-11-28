@@ -4,7 +4,7 @@ from tempfile import NamedTemporaryFile
 from io import StringIO
 from unittest.mock import patch
 from datetime import datetime
-from testyJednostkoweProgram import (
+from MainProgram import (
     Student,
     import_studentow,
     eksport_do_csv,
@@ -30,10 +30,10 @@ def test_import_studentow_correct_file():
     students = import_studentow(temp_file_path)
     
     assert len(students) == 2
-    assert students[0].imie == "Jan"
-    assert students[0].nazwisko == "Kowalski"
-    assert students[1].imie == "Anna"
-    assert students[1].nazwisko == "Nowak"
+    assert students[0].name == "Jan"
+    assert students[0].surname == "Kowalski"
+    assert students[1].name == "Anna"
+    assert students[1].surname == "Nowak"
     
     os.remove(temp_file_path)
 

@@ -4,7 +4,7 @@ from tempfile import NamedTemporaryFile
 from io import StringIO
 from unittest.mock import patch
 from datetime import datetime
-from testyJednostkoweProgram import (
+from MainProgram import (
     Student,
     import_studentow,
     eksport_do_csv,
