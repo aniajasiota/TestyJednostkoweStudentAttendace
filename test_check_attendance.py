@@ -26,6 +26,6 @@ def test_sprawdz_obecnosc_correct_input(sample_students):
     with patch("builtins.input", side_effect=["tak", "nie", "tak"]):
         sprawdz_obecnosc(sample_students)
     
-    assert sample_students[0].attendace is True
-    assert sample_students[1].attendace is False
-    assert sample_students[2].attendace is True
+    assert sample_students[0].attendance is True
+    assert sample_students[1].attendance is False
+    assert sample_students[2].attendance is True
