@@ -1,6 +1,5 @@
 import os
 import csv
-from datetime import datetime
 
 class Student:
     def __init__(self, name, surname, attendance=False):
