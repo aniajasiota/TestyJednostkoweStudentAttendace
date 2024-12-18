@@ -1,9 +1,7 @@
 import pytest
 import os
 from tempfile import NamedTemporaryFile
-from io import StringIO
 from unittest.mock import patch
-from datetime import datetime
 from MainProgram import (
     Student,
     synchronizuj_obecnosc
