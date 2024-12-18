@@ -6,13 +6,7 @@ from unittest.mock import patch
 from datetime import datetime
 from MainProgram import (
     Student,
-    import_studentow,
-    eksport_do_csv,
-    eksport_do_txt,
-    dodaj_nowego_studenta,
-    edytuj_obecnosc,
-    synchronizuj_obecnosc,
-    sprawdz_obecnosc,
+    dodaj_nowego_studenta
 )
 @pytest.fixture
 def sample_students():
