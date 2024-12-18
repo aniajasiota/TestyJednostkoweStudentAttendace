@@ -23,7 +23,6 @@ jobs:
           VALIDATE_PYTHON: true
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-           runs-on: "ubuntu-latest"
 
     permissions:
       contents: read
