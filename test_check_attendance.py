@@ -1,4 +1,5 @@
 import pytest
+import os
 from tempfile import NamedTemporaryFile
 from unittest.mock import patch
 from MainProgram import (
