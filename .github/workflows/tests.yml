@@ -1,4 +1,4 @@
-name: CI Pipeline Unit tests
+name: CI Pipeline
 
 on:
   push:
@@ -33,12 +33,15 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x' 
+          python-version: '3.x'
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install pytest pytest-cov
+
+      - name: Set PYTHONPATH
+        run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
 
       - name: Run tests with coverage
         run: |
@@ -49,17 +52,3 @@ jobs:
         with:
           name: coverage-report
           path: coverage.xml
-
-  create-issues:
-    name: Create Issues from TODOs
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Create issues from TODOs
-        uses: alstr/todo-to-issue-action@v4
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          labels: 'todo'
-          
