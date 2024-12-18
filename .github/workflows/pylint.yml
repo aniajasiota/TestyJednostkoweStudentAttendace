@@ -1,5 +1,5 @@
 n - name: Debug Python Environment
-        run: |
+        run: 
           python --version
           pip --version
           pip freeze
