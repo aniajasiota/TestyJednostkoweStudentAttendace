@@ -20,7 +20,7 @@ jobs:
       - name: Run Super Linter
         uses: github/super-linter@v4
         env:
-          VALIDATE_PYTHON: true
+          VALIDATE_PYTHON_RUFF: true
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
