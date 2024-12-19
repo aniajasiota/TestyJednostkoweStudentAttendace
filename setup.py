@@ -17,14 +17,13 @@ setup(
     author="xanniaqx",
     author_email="anna.jasiota@edu.uekat.pl",
     description="Attendance management system for university",
-    long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/aniajasiota/TestyJednostkoweStudentAttendace.git",
     packages=find_packages(),
     include_package_data=True,
     install_requires=requirements,
     entry_points={
-        "console_scripts": ["TestyJednostkoweStudentAttendance=src.cli.cli:main:main"],
+        "console_scripts": ["TestyJednostkoweStudentAttendance=main:main"],
     },
     classifiers=[
         "Programming Language :: Python :: 3",
