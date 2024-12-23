@@ -1,35 +1,30 @@
 import os
-from setuptools import find_packages, setup
+from setuptools import setup, find_packages
+from pathlib import Path
 
-with open("requirements.txt") as f:
-    required_packages = f.read().splitlines()
 
-version = os.getenv(
-    "VERSION",
-    "0.0.0",  
-)
+this_directory = Path(__file__).parent
+long_description = (this_directory / "README.md").read_text()
+
+Versions = os.getenv('PACKAGE_VERSION', '0.0.0')
+
 
 setup(
-    name="project369367447",
-    version=version,
-    author="xanniaqx",
-    author_email="anna.jasiota@edu.uekat.pl",
-    description="Attendance management system for university",
-    url="https://github.com/aniajasiota/TestyJednostkoweStudentAttendace.git",
-    packages=find_packages(
-        include=["src.*"],
-        exclude=["tests.*"],
-    ),
-     install_requires=required_packages,  # requirements from requirements.txt
+    name='project369367447',
+    version=Versions,
+    description='A sample Python function package',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
+    author='Anna Jasiota',
+    author_email='anna.jasiota@edu.uekat.pl',
+    url='https://github.com/aniajasiota/TestyJednostkoweStudentAttendace.git',
+    packages=find_packages(),
+    install_requires=[],
+    python_requires='>=3.9',
     classifiers=[
-        "Programming Language :: Python :: 3",
-        "Intended Audience :: Education",
-        "Operating System :: OS Independent",
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.9',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: OS Independent',
     ],
-    python_requires=">=3.10",
-    entry_points={
-        "console_scripts": [
-            "menageStudents=src.main:main",  # script when someone uses menageStudents in console he can run this app
-        ]
-    },
 )
