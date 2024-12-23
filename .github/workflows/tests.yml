@@ -19,8 +19,10 @@ jobs:
       - name: Run Super Linter
         uses: github/super-linter@v4
         env:
-          VALIDATE_PYTHON_RUFF: true
           VALIDATE_ALL_CODEBASE: true
+          VALIDATE_PYTHON_RUFF: true
+          VALIDATE_PYTHON: true
+          LINTER_RULES_PATH: .github/linters
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
