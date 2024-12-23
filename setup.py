@@ -26,7 +26,7 @@ setup(
         "Intended Audience :: Education",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.13",
+    python_requires=">=3.9",
     entry_points={
         "console_scripts": [
             "menageStudents=src.main:main",  # script when someone uses menageStudents in console he can run this app
