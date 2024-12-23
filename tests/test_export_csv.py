@@ -1,38 +1,20 @@
-import pytest
-import os
-from tempfile import NamedTemporaryFile
-from unittest.mock import patch
-from MainProgram import (
-    Student,
-    eksport_do_csv
-)
-@pytest.fixture
-def sample_students():
-    return [
-        Student("Jan", "Kowalski"),
-        Student("Anna", "Nowak", True),
-        Student("Marek", "Zieliński", False),
-    ]
+import unittest
+from unittest.mock import patch, mock_open, MagicMock
+import csv
+from import_eksport_files import export_students_csv
 
-def test_eksport_do_csv_creates_file(sample_students):
-    with NamedTemporaryFile(delete=False, mode='w', suffix='.csv') as temp_file:
-        temp_file_path = temp_file.name
+class TestExportStudentsCSV(unittest.TestCase):
 
-    eksport_do_csv(sample_students, temp_file_path)
-    assert os.path.exists(temp_file_path)
+    @patch('builtins.open', new_callable=mock_open)
+    @patch('csv.writer')
+    def test_export_students_csv(self, mock_writer, mock_open):
+        students = [{'name': 'John', 'present': True}, {'name': 'Jane', 'present': False}]
+        
+        export_students_csv(students, "output.csv")
+        mock_open.assert_called_with("output.csv", mode='w', newline='')
+        mock_writer.return_value.writerow.assert_any_call(['Name', 'Present'])
+        mock_writer.return_value.writerow.assert_any_call(['John', True])
+        mock_writer.return_value.writerow.assert_any_call(['Jane', False])
 
-    os.remove(temp_file_path)
-
-def test_eksport_do_csv_correct_format(sample_students):
-    with NamedTemporaryFile(delete=False, mode='w', suffix='.csv') as temp_file:
-        temp_file_path = temp_file.name
-
-    eksport_do_csv(sample_students, temp_file_path)
-    
-    with open(temp_file_path, 'r') as file:
-        lines = file.readlines()
-        assert len(lines) == 4  # Header + 3 students
-        assert "Jan,Kowalski,Nieobecny\n" in lines
-        assert "Anna,Nowak,Obecny\n" in lines
-
-    os.remove(temp_file_path)
+if __name__ == '__main__':
+    unittest.main()

@@ -1,38 +1,17 @@
-import pytest
-import os
-from tempfile import NamedTemporaryFile
-from unittest.mock import patch
-from MainProgram import (
-    Student,
-    eksport_do_txt
-)
-@pytest.fixture
-def sample_students():
-    return [
-        Student("Jan", "Kowalski"),
-        Student("Anna", "Nowak", True),
-        Student("Marek", "Zieliński", False),
-    ]
+import unittest
+from unittest.mock import patch, mock_open
 
-def test_eksport_do_txt_creates_file(sample_students):
-    with NamedTemporaryFile(delete=False, mode='w', suffix='.txt') as temp_file:
-        temp_file_path = temp_file.name
+class TestExportStudentsTXT(unittest.TestCase):
 
-    eksport_do_txt(sample_students, temp_file_path)
-    assert os.path.exists(temp_file_path)
+    @patch('builtins.open', new_callable=mock_open)
+    def test_export_students_txt(self, mock_open):
+        from import_eksport_files import export_students_txt
+        students = [{'name': 'John', 'present': True}, {'name': 'Jane', 'present': False}]
+        export_students_txt(students, "output.txt")
+        mock_open.assert_called_with("output.txt", mode='w')
+        mock_open().write.assert_any_call("John: Present\n")
+        mock_open().write.assert_any_call("Jane: Absent\n")
 
-    os.remove(temp_file_path)
 
-def test_eksport_do_txt_correct_format(sample_students):
-    with NamedTemporaryFile(delete=False, mode='w', suffix='.txt') as temp_file:
-        temp_file_path = temp_file.name
-
-    eksport_do_txt(sample_students, temp_file_path)
-    
-    with open(temp_file_path, 'r') as file:
-        lines = file.readlines()
-        assert len(lines) == 3
-        assert "Jan Kowalski - Nieobecny\n" in lines
-        assert "Anna Nowak - Obecny\n" in lines
-
-    os.remove(temp_file_path)
+if __name__ == '__main__':
+    unittest.main()

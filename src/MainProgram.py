@@ -1,126 +1,110 @@
 import os
-import csv
-from datetime import datetime
 
-class Student:
-    def __init__(self, name, surname, attendance=False):
-        self.name = name
-        self.surname = surname
-        self.attendance = attendance
+def add_student():
+    first_name = input("Enter first name: ")
+    last_name = input("Enter last name: ")
+    student_id = input("Enter ID: ")
+    return f"{first_name},{last_name},{student_id}\n"
 
-    def __str__(self):
-        return f"{self.name} {self.surname} - {'Obecny' if self.attendance else 'Nieobecny'}"
+def manage_student_file():
+    path = "/lista/list.txt"
+    file_name = "list.txt"
+    file_exists = os.path.isfile(path)
 
-    def to_csv(self):
-        return f"{self.name},{self.surname},{'Obecny' if self.attendance else 'Nieobecny'}"
-
-
-def import_studentow(file_path):
-    studenci = []
-    if os.path.exists(file_path):
-        with open(file_path, 'r') as file:
-            lines = file.readlines()
-            for line in lines:
-                data = line.strip().split(' ')
-                if len(data) >= 2:
-                    studenci.append(Student(data[0], data[1]))
+    if file_exists:
+        choice = input(f"The file {path} already exists. Do you want to add a new student? (yes/no): ")
+        if choice != 'yes':
+            print("Operation terminated.")
+            return
     else:
-        print("Plik nie istnieje.")
-    return studenci
+        print(f"The file {file_name} does not exist. A new file will be created.")
+
+    student = add_student()
+
+    with open(file_name, mode='a') as file:
+        if not file_exists:
+            file.write("First Name,Last Name,ID\n")
+        file.write(student)
+
+    print(f"The student was successfully added to the file {path}.")
+
+    # Part 3: Attendance Checker
+
+class AttendanceChecker:
+    def __init__(self, manager):
+        self.manager = manager
+
+    def check_in(self, date, user_id):
+        """Check attendance for a given user and date, with editing if attendance already exists."""
+        if user_id in self.manager.all_attendance and date in self.manager.all_attendance[user_id]:
+            current_status = self.manager.all_attendance[user_id][date]
+            print(f"User {user_id} has already been marked as {'Present' if current_status else 'Absent'} on {date}.")
+
+            new_status = input("Enter new attendance status (True for present, False for absent): ").strip().lower() == 'true'
+            self.manager.edit(date, user_id, new_status)
+        else:
+            print(f"No attendance record found for user {user_id} on {date}.")
+            new_status = input("Enter attendance status (True for present, False for absent): ").strip().lower() == 'true'
+            self.manager.add(date, user_id, new_status)
 
 
-def eksport_do_csv(studenci, file_path):
-    try:
-        with open(file_path, 'w', newline='') as file:
+class AttendanceManager:
+    def __init__(self):
+        self.all_attendance = {}
+
+    def add(self, date, user_id, was):
+        if user_id not in self.all_attendance:
+            self.all_attendance[user_id] = {}
+        self.all_attendance[user_id][date] = was
+        print(f"User with id {user_id} on {date} attendance status marked as {was}.")
+
+    def edit(self, date, user_id, was):
+        if user_id in self.all_attendance and date in self.all_attendance[user_id]:
+            self.all_attendance[user_id][date] = was
+            print(f"User with id {user_id} on {date} attendance status updated to {was}.")
+        else:
+            print(f"No entry found for user with id {user_id} on {date}.")
+
+    def delete(self, date, user_id):
+        if user_id in self.all_attendance and date in self.all_attendance[user_id]:
+            del self.all_attendance[user_id][date]
+            print(f"Attendance entry for user with id {user_id} on {date} deleted.")
+        else:
+            print(f"No entry found for user with id {user_id} on {date}.")
+
+    def generate_report(self):
+        report = "Attendance Report:\n"
+        for user_id, dates in self.all_attendance.items():
+            report += f"User {user_id}:\n"
+            for date, status in dates.items():
+                report += f"  - {date}: {status}\n"
+        return report
+
+    def export_to_csv(self, filename):
+        import csv
+        with open(filename, mode='w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(["name", "surname", "Obecny"])
-            for student in studenci:
-                writer.writerow([student.name, student.surname, "Obecny" if student.attendance else "Nieobecny"])
-        print(f"Zapisano plik CSV: {file_path}")
-    except Exception as ex:
-        print(f"Błąd przy zapisie pliku CSV: {ex}")
+            writer.writerow(["User ID", "Date", "Status"])
+            for user_id, dates in self.all_attendance.items():
+                for date, status in dates.items():
+                    writer.writerow([user_id, date, status])
+        print(f"Attendance data exported to file {filename}.")
+
+import datetime
+
+today_date = datetime.date.today().isoformat()
+
+attendance_manager = AttendanceManager()
+
+attendance_manager.add(date=today_date, user_id=1, was=False)
+
+attendance_manager.edit(date=today_date, user_id=1, was=True)
+
+attendance_manager.add(date=today_date, user_id=2, was=False)
+
+attendance_manager.delete(date=today_date, user_id=2)
+
+print(attendance_manager.generate_report())
 
 
-def eksport_do_txt(studenci, file_path):
-    try:
-        with open(file_path, 'w') as file:
-            for student in studenci:
-                file.write(str(student) + '\n')
-        print(f"Zapisano plik TXT: {file_path}")
-    except Exception as ex:
-        print(f"Błąd przy zapisie pliku TXT: {ex}")
-
-
-def dodaj_nowego_studenta(studenci):
-    name = input("Podaj imię studenta: ")
-    surname = input("Podaj surname studenta: ")
-    attendance = input("Czy student jest obecny? (tak/nie): ").strip().lower() == 'tak'
-    nowy_student = Student(name, surname, attendance)
-    studenci.append(nowy_student)
-    print(f"Dodano nowego studenta: {nowy_student}")
-
-
-def edytuj_obecnosc(obecnosci):
-    print("Edycja obecności studentów:")
-    for student in obecnosci:
-        obecny = input(f"Czy {student.name} {student.surname} jest obecny? (tak/nie): ").strip().lower() == 'tak'
-        obecnosci[student] = obecny
-
-
-def synchronizuj_obecnosc(studenci, obecnosci):
-    for student in studenci:
-        if student in obecnosci:
-            student.attendance = obecnosci[student]
-
-
-def sprawdz_obecnosc(studenci):
-    for student in studenci:
-        obecny = input(f"Czy {student.name} {student.surname} jest obecny? (tak/nie): ").strip().lower() == 'tak'
-        student.attendance = obecny
-
-
-def main():
-    desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
-    input_file_path = os.path.join(desktop_path, "Obecni.txt")
-
-    studenci = import_studentow(input_file_path)
-
-    if not studenci:
-        print("Plik nie zawiera studentów lub nie istnieje.")
-        return
-
-    data_input = input("Podaj dzisiejszą datę (dd-mm-YY): ")
-    data = datetime.strptime(data_input, "%d-%m-%Y")
-
-    if input("Czy chcesz sprawdzić obecność studentów? (tak/nie): ").strip().lower() == 'tak':
-        sprawdz_obecnosc(studenci)
-
-    print("Lista studentów:")
-    for student in studenci:
-        print(student)
-
-    if input("Czy chcesz dodać nowego studenta? (tak/nie): ").strip().lower() == 'tak':
-        dodaj_nowego_studenta(studenci)
-
-    obecnosci = {student: student.attendance for student in studenci}
-
-    if input("Czy chcesz edytować listę obecności? (tak/nie): ").strip().lower() == 'tak':
-        edytuj_obecnosc(obecnosci)
-
-    synchronizuj_obecnosc(studenci, obecnosci)
-
-    format_zapisu = input("Podaj format zapisu txt/csv: ").strip().lower()
-    output_file_path = os.path.join(desktop_path, "Obecni_Export.csv" if format_zapisu == 'csv' else "Obecni_Export.txt")
-
-    if format_zapisu == 'csv':
-        eksport_do_csv(studenci, output_file_path)
-    elif format_zapisu == 'txt':
-        eksport_do_txt(studenci, output_file_path)
-    else:
-        print("Nieznany format.")
-
-    print(f"Zapisano plik na pulpicie: {output_file_path}")
-
-
-if __name__ == "__main__":
-    main()
+attendance_manager.export_to_csv("attendance_report.csv")
